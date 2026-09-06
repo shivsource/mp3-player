@@ -30,6 +30,8 @@ const DEFAULT_CONFIG = {
   regionCode: 'IN',
   relevanceLanguage: 'hi',
   safeSearch: 'none',
+  videoEmbeddable: 'true',
+  videoSyndicated: 'true',
   maxResults: 15,
 };
 
@@ -173,7 +175,7 @@ const fetchVideoDetails = async (videoIds, apiKey) => {
   if (!videoIds || videoIds.length === 0) return {};
   try {
     const idsParam = videoIds.join(',');
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${idsParam}&key=${encodeURIComponent(apiKey)}`;
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,status&id=${idsParam}&key=${encodeURIComponent(apiKey)}`;
     const res = await fetch(url);
     if (!res.ok) return {};
     const data = await res.json();
@@ -186,6 +188,7 @@ const fetchVideoDetails = async (videoIds, apiKey) => {
           item.snippet?.thumbnails?.maxres?.url ||
           item.snippet?.thumbnails?.high?.url ||
           item.snippet?.thumbnails?.medium?.url,
+        isEmbeddable: item.status?.embeddable !== false,
       };
     });
     return map;
@@ -229,7 +232,7 @@ const fetchModePlaylistFromApi = async (mode, timeMode, key, customApiKey) => {
   const seenIds = new Set();
 
   for (const query of queries) {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoCategoryId=10&maxResults=${DEFAULT_CONFIG.maxResults}&regionCode=${DEFAULT_CONFIG.regionCode}&relevanceLanguage=${DEFAULT_CONFIG.relevanceLanguage}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`;
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoCategoryId=10&videoEmbeddable=true&videoSyndicated=true&maxResults=${DEFAULT_CONFIG.maxResults}&regionCode=${DEFAULT_CONFIG.regionCode}&relevanceLanguage=${DEFAULT_CONFIG.relevanceLanguage}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`;
 
     try {
       const res = await fetch(url);
@@ -279,6 +282,9 @@ const fetchModePlaylistFromApi = async (mode, timeMode, key, customApiKey) => {
       }
 
       const detail = detailsMap[vidId] || {};
+      if (detail.isEmbeddable === false) {
+        return null;
+      }
       const durationSeconds = detail.durationSeconds || 240;
       const duration = detail.duration || '3:45';
 

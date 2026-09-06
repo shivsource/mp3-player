@@ -49,6 +49,7 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
   const [apiError, setApiError] = useState(null);
   const [trackNotification, setTrackNotification] = useState(null);
 
+  const consecutiveErrorsRef = useRef(0);
   const currentTrack = playlist[currentIndex] || null;
   const timeUpdateIntervalRef = useRef(null);
   const hasInitializedPlayerRef = useRef(false);
@@ -79,6 +80,7 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
         if (!isMounted) return;
         const state = event.data;
         if (state === 1) { // Playing
+          consecutiveErrorsRef.current = 0;
           setIsPlaying(true);
           setIsBuffering(false);
           setApiError(null);
@@ -96,10 +98,16 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
       },
       onError: (event) => {
         if (!isMounted) return;
-        console.warn('YouTube Player Error code:', event.data);
+        console.warn('YouTube playback error (code:', event.data, '), silently skipping to next song...');
         setIsBuffering(false);
-        setTrackNotification('Song unavailable on embed, skipping to next Indian track...');
-        setTimeout(() => setTrackNotification(null), 3000);
+        consecutiveErrorsRef.current += 1;
+        if (consecutiveErrorsRef.current > 3) {
+          console.warn('Multiple consecutive errors, pausing auto-skip.');
+          setIsPlaying(false);
+          consecutiveErrorsRef.current = 0;
+          return;
+        }
+        // Silently skip to next playable song without disruptive error toast
         nextTrack();
       },
     };
