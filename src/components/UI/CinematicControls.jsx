@@ -94,17 +94,17 @@ export const CinematicControls = ({
         {/* Hide / Show UI */}
         <button
           onClick={onToggleHideUi}
-          className="p-2 rounded-full text-slate-400 hover:text-white glass-button transition-colors"
+          className="p-1.5 sm:p-2 rounded-full text-slate-400 hover:text-white glass-button transition-colors"
           title="Pure Wallpaper Mode (H)"
           aria-label="Hide UI"
         >
-          {isUiHidden ? <Eye className="w-4 h-4 text-cyan-400" /> : <EyeOff className="w-4 h-4" />}
+          {isUiHidden ? <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" /> : <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
         </button>
 
-        {/* Shortcuts Help Modal */}
+        {/* Shortcuts Help Modal (Desktop only) */}
         <button
           onClick={onOpenHelp}
-          className="p-2 rounded-full text-slate-400 hover:text-white glass-button transition-colors"
+          className="hidden sm:inline-flex p-2 rounded-full text-slate-400 hover:text-white glass-button transition-colors"
           title="Keyboard Shortcuts (?)"
           aria-label="Keyboard Shortcuts"
         >

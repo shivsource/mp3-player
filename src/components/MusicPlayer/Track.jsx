@@ -16,7 +16,7 @@ export const Track = ({
       onClick={() => onSelect(index)}
       className={`w-full p-2 rounded-xl flex items-center gap-3 text-left transition-all duration-200 group ${
         isActive
-          ? 'bg-white/10 border border-white/15 shadow-md'
+          ? 'bg-white/15 border border-cyan-500/40 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/20'
           : 'hover:bg-white/5 border border-transparent'
       }`}
       aria-label={`Play ${track.title} by ${track.artist}`}
@@ -50,8 +50,8 @@ export const Track = ({
       {/* Track Meta */}
       <div className="flex-1 min-w-0">
         <h4
-          className={`text-xs font-medium truncate transition-colors ${
-            isActive ? 'text-white font-semibold' : 'text-slate-200 group-hover:text-white'
+          className={`text-xs font-semibold truncate transition-colors ${
+            isActive ? 'text-white' : 'text-slate-200 group-hover:text-white'
           }`}
           style={{ color: isActive ? accentColor : undefined }}
         >
@@ -62,10 +62,20 @@ export const Track = ({
         </p>
       </div>
 
-      {/* Duration */}
-      <span className="text-[10px] font-mono text-slate-400 flex-shrink-0">
-        {track.duration}
-      </span>
+      {/* Duration and Playing Status Badge */}
+      <div className="flex items-center gap-1.5 flex-shrink-0">
+        {isActive && (
+          <span
+            className="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold uppercase tracking-wider"
+            style={{ backgroundColor: `${accentColor}25`, color: accentColor }}
+          >
+            {isPlaying ? 'PLAYING' : 'PAUSED'}
+          </span>
+        )}
+        <span className="text-[10px] font-mono text-slate-400">
+          {track.duration}
+        </span>
+      </div>
     </button>
   );
 };

@@ -39,7 +39,7 @@ export const SteeringWheel = ({
         {/* SVG Detailed High-End Steering Wheel */}
         <svg
           viewBox="0 0 400 400"
-          className="w-72 h-72 sm:w-84 sm:h-84 md:w-96 md:h-96 drop-shadow-2xl pointer-events-none"
+          className="w-56 h-56 sm:w-84 sm:h-84 md:w-96 md:h-96 drop-shadow-2xl pointer-events-none"
         >
           <defs>
             {/* Outer Rim Radial Gradient */}
@@ -199,7 +199,7 @@ export const SteeringWheel = ({
         </svg>
 
         {/* --- Interactive Media Controls (pointer-events re-enabled over the SVG) --- */}
-        <svg viewBox="0 0 400 400" className="absolute inset-0 w-72 h-72 sm:w-84 sm:h-84 md:w-96 md:h-96">
+        <svg viewBox="0 0 400 400" className="absolute inset-0 w-56 h-56 sm:w-84 sm:h-84 md:w-96 md:h-96">
           {/* Left Spoke Cluster: PREVIOUS TRACK */}
           <motion.g
             role="button"

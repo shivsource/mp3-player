@@ -18,7 +18,7 @@ const cacheKey = (mode, timeMode) => `${mode}_${timeMode}`;
 // the YouTube Data API is unavailable (missing/invalid key, quota exceeded, network
 // failure, etc). Playback itself doesn't need the Data API key — only search does —
 // so these tracks play exactly like a live-fetched playlist would.
-const getFallbackPlaylist = (mode) => {
+export const getFallbackPlaylist = (mode) => {
   const tracks = fallbackPlaylists[mode] || fallbackPlaylists.highway || [];
   // Shuffle so repeated fallbacks (e.g. switching modes back and forth) don't always
   // start on the same track.

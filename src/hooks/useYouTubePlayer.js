@@ -5,6 +5,7 @@ import {
   clearRuntimeCache,
   isApiKeyConfigured,
   getYouTubeApiKey,
+  getFallbackPlaylist,
 } from '../services/youtube';
 
 const MODE_RADIO_METADATA = {
@@ -34,7 +35,7 @@ const TIME_MOOD = {
 };
 
 export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
-  const [playlist, setPlaylist] = useState([]);
+  const [playlist, setPlaylist] = useState(() => getFallbackPlaylist(currentMode));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);

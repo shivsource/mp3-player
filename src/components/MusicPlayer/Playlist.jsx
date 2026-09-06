@@ -71,8 +71,8 @@ export const Playlist = ({
         </div>
       </div>
 
-      {/* 1. LOADING STATE WITH SKELETON ROWS & DYNAMIC MESSAGE */}
-      {isLoadingPlaylist && (
+      {/* 1. LOADING STATE WITH SKELETON ROWS ONLY WHEN PLAYLIST IS EMPTY */}
+      {isLoadingPlaylist && playlist.length === 0 && (
         <div className="flex flex-col gap-2 py-3 px-1">
           <div className="flex items-center justify-center gap-2 py-2 text-xs font-mono text-cyan-300">
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -93,6 +93,14 @@ export const Playlist = ({
               <div className="h-3 w-8 rounded bg-white/5" />
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Subtle refreshing badge when new songs are being fetched in the background */}
+      {isLoadingPlaylist && playlist.length > 0 && (
+        <div className="flex items-center justify-center gap-1.5 py-1 px-2 mb-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-mono text-cyan-300">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          <span className="truncate">{loadingMessage}</span>
         </div>
       )}
 
@@ -155,9 +163,9 @@ export const Playlist = ({
       )}
 
       {/* 4. DYNAMIC STREAMED TRACKS LIST */}
-      {!isLoadingPlaylist && !apiError && playlist.length > 0 && (
+      {playlist.length > 0 && (!apiError || isLoadingPlaylist) && (
         <div className="flex flex-col gap-1">
-          <div className="max-h-52 overflow-y-auto custom-scrollbar flex flex-col gap-1 pr-1">
+          <div className="max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar flex flex-col gap-1 pr-1">
             {playlist.map((track, index) => (
               <Track
                 key={track.videoId + index}
@@ -173,8 +181,10 @@ export const Playlist = ({
 
           {/* Footer Metadata */}
           <div className="flex items-center justify-between pt-1.5 text-[10px] text-slate-400 font-mono px-1">
-            <span>{playlist.length} Live Tracks</span>
-            <span>Now Playing #{currentIndex + 1}</span>
+            <span>{playlist.length} Tracks</span>
+            <span className="text-cyan-300 font-medium">
+              Now Playing #{currentIndex + 1}
+            </span>
           </div>
         </div>
       )}

@@ -81,7 +81,7 @@ export default function App() {
   return (
     <div
       onClick={handleUserInteraction}
-      className="relative w-screen h-screen overflow-hidden bg-black text-slate-100 font-sans select-none flex flex-col"
+      className="relative w-screen h-screen h-[100dvh] overflow-hidden bg-black text-slate-100 font-sans select-none flex flex-col"
     >
       {/* 1. MASTER PHOTOREALISTIC DRIVING SCENE (Full Viewport) */}
       <div className="absolute inset-0 z-0">
@@ -118,10 +118,10 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="relative z-40 w-full pt-4 px-4 sm:px-8 flex flex-wrap items-center justify-between gap-2 pointer-events-none"
+            className="relative z-40 w-full pt-2.5 sm:pt-4 px-3 sm:px-8 flex flex-wrap items-center justify-between gap-2 pointer-events-none"
           >
             {/* Minimal Brand Tag with Time Badge */}
-            <div className="pointer-events-auto flex items-center gap-2.5 glass-panel px-3.5 py-1.5 rounded-full border border-white/10 shadow-lg">
+            <div className="pointer-events-auto flex items-center gap-2 sm:gap-2.5 glass-panel px-2.5 sm:px-3.5 py-1.5 rounded-full border border-white/10 shadow-lg">
               <Car className="w-4 h-4 text-cyan-400 animate-pulse-subtle" />
               <div className="flex flex-col">
                 <span className="text-xs font-bold tracking-wider uppercase text-white font-display">
@@ -173,7 +173,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="relative z-40 w-full flex justify-center px-4 md:hidden pointer-events-auto mt-2"
+            className="relative z-40 w-full flex justify-center px-3 sm:px-4 md:hidden pointer-events-auto mt-1 sm:mt-2"
           >
             <ModeSelector
               currentMode={currentMode}
@@ -183,17 +183,17 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* 3. FLOATING MUSIC PLAYER (Bottom-Right on Desktop, Bottom Center on Mobile) */}
+      {/* 3. FLOATING MUSIC PLAYER (Below ModeSelector on Mobile, Bottom-Right on Desktop) */}
       <AnimatePresence>
         {!isUiHidden && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="relative z-40 w-full mt-auto px-4 sm:px-8 pb-4 sm:pb-6 flex justify-end items-end pointer-events-none"
+            className="relative z-40 w-full px-3 sm:px-8 mt-2 sm:mt-auto sm:pb-6 flex justify-center sm:justify-end items-start sm:items-end pointer-events-none"
           >
-            <div className="pointer-events-auto">
+            <div className="pointer-events-auto w-full max-w-[360px] sm:max-w-none sm:w-auto flex justify-center sm:block">
               <MusicPlayer
                 player={player}
                 accentColor={currentMode.accentColor}
