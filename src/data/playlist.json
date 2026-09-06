@@ -1,0 +1,173 @@
+{
+  "highway": [
+    {
+      "id": "fP6MNznzVcQ",
+      "videoId": "fP6MNznzVcQ",
+      "title": "Zinda",
+      "artist": "Siddharth Mahadevan",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/fP6MNznzVcQ/hqdefault.jpg",
+      "duration": "4:45",
+      "durationSeconds": 285,
+      "mode": "highway"
+    },
+    {
+      "id": "yJqcJE2RL8E",
+      "videoId": "yJqcJE2RL8E",
+      "title": "Yeh Dooriyan",
+      "artist": "Mohit Chauhan",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/yJqcJE2RL8E/hqdefault.jpg",
+      "duration": "3:50",
+      "durationSeconds": 230,
+      "mode": "highway"
+    },
+    {
+      "id": "RIT0iUY1cyk",
+      "videoId": "RIT0iUY1cyk",
+      "title": "O Saathi",
+      "artist": "Atif Aslam",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/RIT0iUY1cyk/hqdefault.jpg",
+      "duration": "4:05",
+      "durationSeconds": 245,
+      "mode": "highway"
+    },
+    {
+      "id": "5IY4BNj0-10",
+      "videoId": "5IY4BNj0-10",
+      "title": "Zara Sa",
+      "artist": "KK",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/5IY4BNj0-10/hqdefault.jpg",
+      "duration": "4:20",
+      "durationSeconds": 260,
+      "mode": "highway"
+    },
+    {
+      "id": "6vKucgAeF_Q",
+      "videoId": "6vKucgAeF_Q",
+      "title": "Matargashti",
+      "artist": "Mohit Chauhan",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/6vKucgAeF_Q/hqdefault.jpg",
+      "duration": "4:35",
+      "durationSeconds": 275,
+      "mode": "highway"
+    }
+  ],
+  "city": [
+    {
+      "id": "ab-F3lRDqsc",
+      "videoId": "ab-F3lRDqsc",
+      "title": "Brown Munde",
+      "artist": "AP Dhillon, Gurinder Gill, Shinda Kahlon",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/ab-F3lRDqsc/hqdefault.jpg",
+      "duration": "3:30",
+      "durationSeconds": 210,
+      "mode": "city"
+    },
+    {
+      "id": "mH_LFkWxpI0",
+      "videoId": "mH_LFkWxpI0",
+      "title": "Lover",
+      "artist": "Diljit Dosanjh",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/mH_LFkWxpI0/hqdefault.jpg",
+      "duration": "3:15",
+      "durationSeconds": 195,
+      "mode": "city"
+    },
+    {
+      "id": "MsTW5cyWKj4",
+      "videoId": "MsTW5cyWKj4",
+      "title": "5 Taara",
+      "artist": "Diljit Dosanjh",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/MsTW5cyWKj4/hqdefault.jpg",
+      "duration": "3:40",
+      "durationSeconds": 220,
+      "mode": "city"
+    },
+    {
+      "id": "yKI8hh9q8WE",
+      "videoId": "yKI8hh9q8WE",
+      "title": "Excuses",
+      "artist": "AP Dhillon, Gurinder Gill",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/yKI8hh9q8WE/hqdefault.jpg",
+      "duration": "3:20",
+      "durationSeconds": 200,
+      "mode": "city"
+    },
+    {
+      "id": "XrKth6XXAfQ",
+      "videoId": "XrKth6XXAfQ",
+      "title": "Softly",
+      "artist": "Karan Aujla, Ikky",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/XrKth6XXAfQ/hqdefault.jpg",
+      "duration": "3:05",
+      "durationSeconds": 185,
+      "mode": "city"
+    }
+  ],
+  "village": [
+    {
+      "id": "xjMMt9IUAro",
+      "videoId": "xjMMt9IUAro",
+      "title": "Mere Sapno Ki Rani",
+      "artist": "Kishore Kumar",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/xjMMt9IUAro/hqdefault.jpg",
+      "duration": "4:40",
+      "durationSeconds": 280,
+      "mode": "village"
+    },
+    {
+      "id": "4sQeiHSXVfQ",
+      "videoId": "4sQeiHSXVfQ",
+      "title": "Roop Tera Mastana",
+      "artist": "Kishore Kumar",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/4sQeiHSXVfQ/hqdefault.jpg",
+      "duration": "3:00",
+      "durationSeconds": 180,
+      "mode": "village"
+    },
+    {
+      "id": "y2fgw1Oqz28",
+      "videoId": "y2fgw1Oqz28",
+      "title": "Lag Ja Gale",
+      "artist": "Lata Mangeshkar",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/y2fgw1Oqz28/hqdefault.jpg",
+      "duration": "4:15",
+      "durationSeconds": 255,
+      "mode": "village"
+    },
+    {
+      "id": "5Ud2rsMT5ng",
+      "videoId": "5Ud2rsMT5ng",
+      "title": "Chaudhvin Ka Chand Ho",
+      "artist": "Mohammed Rafi",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/5Ud2rsMT5ng/hqdefault.jpg",
+      "duration": "5:00",
+      "durationSeconds": 300,
+      "mode": "village"
+    },
+    {
+      "id": "bw9Tc1MDDm0",
+      "videoId": "bw9Tc1MDDm0",
+      "title": "Mehbooba Mehbooba",
+      "artist": "R.D. Burman, Asha Bhosle",
+      "channelId": "",
+      "thumbnail": "https://img.youtube.com/vi/bw9Tc1MDDm0/hqdefault.jpg",
+      "duration": "5:35",
+      "durationSeconds": 335,
+      "mode": "village"
+    }
+  ]
+}
