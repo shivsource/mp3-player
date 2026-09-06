@@ -150,13 +150,13 @@ export const MusicPlayer = ({
 
               <div className="flex items-center gap-1">
                 {/* Minimize Card */}
-                <button
+                {/* <button
                   onClick={() => setIsMinimized(true)}
                   className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors ml-1"
                   aria-label="Minimize player"
                 >
                   <ChevronDown className="w-4 h-4" />
-                </button>
+                </button> */}
               </div>
             </div>
 
