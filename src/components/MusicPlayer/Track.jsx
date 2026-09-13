@@ -1,4 +1,5 @@
 import React from 'react';
+import { Heart } from 'lucide-react';
 
 /**
  * Individual Playlist Item Component
@@ -9,12 +10,22 @@ export const Track = ({
   isActive,
   isPlaying,
   onSelect,
+  isLiked = false,
+  onToggleLike,
   accentColor = '#38bdf8',
 }) => {
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onSelect(index)}
-      className={`w-full p-2 rounded-xl flex items-center gap-3 text-left transition-all duration-200 group ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(index);
+        }
+      }}
+      className={`w-full p-2 rounded-xl flex items-center gap-3 text-left transition-all duration-200 group cursor-pointer ${
         isActive
           ? 'bg-white/15 border border-cyan-500/40 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/20'
           : 'hover:bg-white/5 border border-transparent'
@@ -62,6 +73,23 @@ export const Track = ({
         </p>
       </div>
 
+      {/* Like Button */}
+      {onToggleLike && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLike(track.videoId);
+          }}
+          className="p-1 rounded-full flex-shrink-0 opacity-60 group-hover:opacity-100 hover:scale-125 active:scale-90 transition-all"
+          aria-label={isLiked ? 'Unlike track' : 'Like track'}
+          title={isLiked ? 'Unlike track' : 'Like track'}
+        >
+          <Heart
+            className={`w-3.5 h-3.5 transition-colors ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`}
+          />
+        </button>
+      )}
+
       {/* Duration and Playing Status Badge */}
       <div className="flex items-center gap-1.5 flex-shrink-0">
         {isActive && (
@@ -76,6 +104,6 @@ export const Track = ({
           {track.duration}
         </span>
       </div>
-    </button>
+    </div>
   );
 };

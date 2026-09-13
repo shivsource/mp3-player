@@ -48,6 +48,8 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
   const [isLoadingPlaylist, setIsLoadingPlaylist] = useState(true);
   const [apiError, setApiError] = useState(null);
   const [trackNotification, setTrackNotification] = useState(null);
+  const [shuffleMode, setShuffleMode] = useState(false);
+  const [repeatMode, setRepeatMode] = useState('all'); // 'off' | 'all' | 'one'
 
   const consecutiveErrorsRef = useRef(0);
   const currentTrack = playlist[currentIndex] || null;
@@ -57,6 +59,21 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
   currentModeRef.current = currentMode;
   const timeModeRef = useRef(timeMode);
   timeModeRef.current = timeMode;
+  const isPlayerReadyRef = useRef(isPlayerReady);
+  isPlayerReadyRef.current = isPlayerReady;
+  const hasStartedByUserRef = useRef(hasStartedByUser);
+  hasStartedByUserRef.current = hasStartedByUser;
+  const playlistRef = useRef(playlist);
+  playlistRef.current = playlist;
+  const currentIndexRef = useRef(currentIndex);
+  currentIndexRef.current = currentIndex;
+  const shuffleModeRef = useRef(shuffleMode);
+  shuffleModeRef.current = shuffleMode;
+  const repeatModeRef = useRef(repeatMode);
+  repeatModeRef.current = repeatMode;
+  // Always points at the latest nextTrack, so the mount-only player-init
+  // effect below never calls back into a stale closure.
+  const nextTrackRef = useRef(() => {});
 
   const baseMeta = MODE_RADIO_METADATA[currentMode] || MODE_RADIO_METADATA.highway;
   const timeMood = TIME_MOOD[timeMode] || TIME_MOOD.day;
@@ -91,9 +108,21 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
           setIsBuffering(false);
         } else if (state === 3) { // Buffering
           setIsBuffering(true);
-        } else if (state === 0) { // Ended -> Loop to next track
+        } else if (state === 0) { // Ended
           setIsBuffering(false);
-          nextTrack();
+          if (repeatModeRef.current === 'one') {
+            youtubeService.seekTo(0);
+            youtubeService.play();
+            setCurrentTime(0);
+            setIsPlaying(true);
+            return;
+          }
+          const isLastTrack = currentIndexRef.current >= playlistRef.current.length - 1;
+          if (repeatModeRef.current === 'off' && !shuffleModeRef.current && isLastTrack) {
+            setIsPlaying(false);
+            return;
+          }
+          nextTrackRef.current();
         }
       },
       onError: (event) => {
@@ -108,7 +137,7 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
           return;
         }
         // Silently skip to next playable song without disruptive error toast
-        nextTrack();
+        nextTrackRef.current();
       },
     };
 
@@ -163,8 +192,8 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
         setCurrentTime(0);
         setDuration(tracks[0].durationSeconds || 240);
 
-        if (isPlayerReady) {
-          if (hasStartedByUser) {
+        if (isPlayerReadyRef.current) {
+          if (hasStartedByUserRef.current) {
             youtubeService.loadVideo(tracks[0].videoId);
             setIsPlaying(true);
           } else {
@@ -184,7 +213,12 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
     } finally {
       setIsLoadingPlaylist(false);
     }
-  }, [isPlayerReady, hasStartedByUser]);
+    // Stable identity: reads live isPlayerReady/hasStartedByUser via refs instead of
+    // depending on them directly, so this callback's reference never changes and the
+    // "fetch on mode/time change" effect below doesn't re-fire (and reset the current
+    // track back to index 0) every time the user's very first play/select/skip action
+    // flips hasStartedByUser or the player becomes ready.
+  }, []);
 
   // Trigger playlist fetch when mode or time-of-day changes
   useEffect(() => {
@@ -239,12 +273,19 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
     setPlaylist((currentPlaylist) => {
       if (currentPlaylist.length === 0) return currentPlaylist;
       setCurrentIndex((prevIdx) => {
-        const nextIdx = (prevIdx + 1) % currentPlaylist.length;
+        let nextIdx;
+        if (shuffleModeRef.current && currentPlaylist.length > 1) {
+          do {
+            nextIdx = Math.floor(Math.random() * currentPlaylist.length);
+          } while (nextIdx === prevIdx);
+        } else {
+          nextIdx = (prevIdx + 1) % currentPlaylist.length;
+        }
         const target = currentPlaylist[nextIdx];
         if (target) {
           setCurrentTime(0);
           setDuration(target.durationSeconds || 240);
-          if (isPlayerReady) {
+          if (isPlayerReadyRef.current) {
             youtubeService.loadVideo(target.videoId);
             setIsPlaying(true);
           }
@@ -253,7 +294,14 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
       });
       return currentPlaylist;
     });
-  }, [isPlayerReady]);
+  }, []);
+  nextTrackRef.current = nextTrack;
+
+  const toggleShuffle = useCallback(() => setShuffleMode((prev) => !prev), []);
+
+  const cycleRepeatMode = useCallback(() => {
+    setRepeatMode((prev) => (prev === 'all' ? 'one' : prev === 'one' ? 'off' : 'all'));
+  }, []);
 
   const prevTrack = useCallback(() => {
     setHasStartedByUser(true);
@@ -369,6 +417,10 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
     apiError,
     apiKeyValid,
     trackNotification,
+    shuffleMode,
+    repeatMode,
+    toggleShuffle,
+    cycleRepeatMode,
     radioTitle: meta.radioTitle,
     radioSubtitle: meta.radioSubtitle,
     loadingMessage: meta.loadingMessage,

@@ -8,10 +8,15 @@ import {
   Loader2,
   Sparkles,
   Music2,
+  Shuffle,
+  Repeat,
+  Repeat1,
 } from 'lucide-react';
 
 export const Playlist = ({
   player,
+  isLiked,
+  onToggleLike,
   accentColor = '#38bdf8',
 }) => {
   const {
@@ -28,6 +33,10 @@ export const Playlist = ({
     refreshPlaylist,
     retryFetch,
     setCustomApiKeyAndReload,
+    shuffleMode,
+    repeatMode,
+    toggleShuffle,
+    cycleRepeatMode,
   } = player;
 
   const [inputKey, setInputKey] = useState('');
@@ -57,8 +66,44 @@ export const Playlist = ({
           </span>
         </div>
 
-        {/* Action Buttons: Refresh & Key Status */}
+        {/* Action Buttons: Shuffle, Repeat, Refresh */}
         <div className="flex items-center gap-1.5">
+          <button
+            onClick={toggleShuffle}
+            className={`p-1.5 rounded-lg text-[10px] font-mono transition-all ${
+              shuffleMode
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                : 'text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10'
+            }`}
+            aria-label="Toggle shuffle"
+            title={shuffleMode ? 'Shuffle: On' : 'Shuffle: Off'}
+          >
+            <Shuffle className="w-3 h-3" />
+          </button>
+
+          <button
+            onClick={cycleRepeatMode}
+            className={`p-1.5 rounded-lg text-[10px] font-mono transition-all ${
+              repeatMode !== 'off'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                : 'text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10'
+            }`}
+            aria-label="Cycle repeat mode"
+            title={
+              repeatMode === 'one'
+                ? 'Repeat: One track'
+                : repeatMode === 'all'
+                ? 'Repeat: All tracks'
+                : 'Repeat: Off'
+            }
+          >
+            {repeatMode === 'one' ? (
+              <Repeat1 className="w-3 h-3" />
+            ) : (
+              <Repeat className="w-3 h-3" />
+            )}
+          </button>
+
           <button
             onClick={refreshPlaylist}
             disabled={isLoadingPlaylist}
@@ -174,6 +219,8 @@ export const Playlist = ({
                 isActive={currentIndex === index}
                 isPlaying={isPlaying}
                 onSelect={selectTrack}
+                isLiked={isLiked ? isLiked(track.videoId) : false}
+                onToggleLike={onToggleLike}
                 accentColor={accentColor}
               />
             ))}

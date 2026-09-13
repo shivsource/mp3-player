@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ProgressBar } from './ProgressBar';
 import { PlayerControls } from './PlayerControls';
 import { Playlist } from './Playlist';
+import { useLikedTracks } from '../../hooks/useLikedTracks';
 import {
   Disc3,
   ChevronDown,
@@ -15,6 +16,7 @@ import {
   SkipBack,
   SkipForward,
   ListMusic,
+  Heart,
 } from 'lucide-react';
 
 /**
@@ -28,6 +30,18 @@ export const MusicPlayer = ({
 }) => {
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [artTilt, setArtTilt] = useState({ x: 0, y: 0 });
+  const [playRippleId, setPlayRippleId] = useState(0);
+  const { isLiked, toggleLike } = useLikedTracks();
+
+  const handleArtMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    setArtTilt({ x: py * -14, y: px * 14 });
+  };
+
+  const resetArtTilt = () => setArtTilt({ x: 0, y: 0 });
 
   const {
     playlist,
@@ -134,8 +148,24 @@ export const MusicPlayer = ({
               </div>
             </div>
 
-            {/* Prev - Play - Next - Playlist Buttons */}
+            {/* Like - Prev - Play - Next - Playlist Buttons */}
             <div className="flex items-center gap-1 flex-shrink-0">
+              {/* Like Button */}
+              {currentTrack && (
+                <button
+                  onClick={() => toggleLike(currentTrack.videoId)}
+                  className="p-1.5 rounded-full text-slate-300 hover:text-white glass-button active:scale-90 hover:scale-110 transition-transform"
+                  aria-label={isLiked(currentTrack.videoId) ? 'Unlike track' : 'Like track'}
+                  title={isLiked(currentTrack.videoId) ? 'Unlike track' : 'Like track'}
+                >
+                  <Heart
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      isLiked(currentTrack.videoId) ? 'fill-rose-500 text-rose-500' : ''
+                    }`}
+                  />
+                </button>
+              )}
+
               {/* Prev Button */}
               <button
                 onClick={prevTrack}
@@ -148,14 +178,24 @@ export const MusicPlayer = ({
 
               {/* Play / Pause Primary Button */}
               <button
-                onClick={togglePlay}
-                className="p-2 rounded-full text-slate-950 font-bold transition-all transform active:scale-90 shadow-md flex items-center justify-center"
+                onClick={() => {
+                  togglePlay();
+                  setPlayRippleId((id) => id + 1);
+                }}
+                className="relative p-2 rounded-full text-slate-950 font-bold transition-all transform active:scale-90 shadow-md flex items-center justify-center overflow-hidden"
                 style={{
                   backgroundColor: accentColor,
                   boxShadow: `0 0 12px ${accentColor}99`,
                 }}
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
+                <motion.span
+                  key={playRippleId}
+                  initial={{ scale: 0, opacity: 0.5 }}
+                  animate={{ scale: 2, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="absolute inset-0 rounded-full bg-white pointer-events-none"
+                />
                 {isBuffering ? (
                   <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                 ) : isPlaying ? (
@@ -233,6 +273,8 @@ export const MusicPlayer = ({
               >
                 <Playlist
                   player={player}
+                  isLiked={isLiked}
+                  onToggleLike={toggleLike}
                   accentColor={accentColor}
                 />
               </motion.div>
@@ -381,14 +423,32 @@ export const MusicPlayer = ({
                     </div>
                   ) : currentTrack ? (
                     <>
-                      {/* Album Cover Art */}
-                      <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-900 border border-white/15 shadow-lg group">
+                      {/* Album Cover Art (interactive tilt on hover) */}
+                      <div
+                        className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-900 border border-white/15 shadow-lg group"
+                        style={{
+                          transform: `perspective(400px) rotateX(${artTilt.x}deg) rotateY(${artTilt.y}deg) scale(${
+                            artTilt.x || artTilt.y ? 1.08 : 1
+                          })`,
+                          transition: 'transform 0.15s ease-out',
+                        }}
+                        onMouseMove={handleArtMouseMove}
+                        onMouseLeave={resetArtTilt}
+                      >
                         <img
                           src={currentTrack.thumbnail}
                           alt={currentTrack.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 pointer-events-none" />
+                        {isPlaying && (
+                          <div className="absolute inset-0 bg-black/30 flex items-end justify-center pb-1.5 gap-0.5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="w-1 bg-cyan-400 rounded-full eq-bar-1" />
+                            <div className="w-1 bg-cyan-400 rounded-full eq-bar-2" />
+                            <div className="w-1 bg-cyan-400 rounded-full eq-bar-3" />
+                            <div className="w-1 bg-cyan-400 rounded-full eq-bar-4" />
+                          </div>
+                        )}
                       </div>
 
                       {/* Track Titles & Radio Genre */}
@@ -399,9 +459,23 @@ export const MusicPlayer = ({
                             Now Playing
                           </span>
                         </div>
-                        <h3 className="text-sm sm:text-base font-bold text-white truncate" title={currentTrack.title}>
-                          {currentTrack.title}
-                        </h3>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <h3 className="text-sm sm:text-base font-bold text-white truncate" title={currentTrack.title}>
+                            {currentTrack.title}
+                          </h3>
+                          <button
+                            onClick={() => toggleLike(currentTrack.videoId)}
+                            className="flex-shrink-0 p-0.5 rounded-full hover:scale-125 active:scale-90 transition-transform"
+                            aria-label={isLiked(currentTrack.videoId) ? 'Unlike track' : 'Like track'}
+                            title={isLiked(currentTrack.videoId) ? 'Unlike track' : 'Like track'}
+                          >
+                            <Heart
+                              className={`w-3.5 h-3.5 transition-colors ${
+                                isLiked(currentTrack.videoId) ? 'fill-rose-500 text-rose-500' : 'text-slate-500 hover:text-white'
+                              }`}
+                            />
+                          </button>
+                        </div>
                         <p className="text-xs text-slate-400 truncate mt-0.5" title={currentTrack.artist}>
                           {currentTrack.artist}
                         </p>
@@ -454,6 +528,8 @@ export const MusicPlayer = ({
                   >
                     <Playlist
                       player={player}
+                      isLiked={isLiked}
+                      onToggleLike={toggleLike}
                       accentColor={accentColor}
                     />
                   </motion.div>

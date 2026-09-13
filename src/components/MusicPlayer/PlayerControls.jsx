@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   Play,
   Pause,
@@ -28,6 +29,7 @@ export const PlayerControls = ({
   accentColor = '#38bdf8',
 }) => {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [rippleId, setRippleId] = useState(0);
 
   return (
     <div className="w-full flex items-center justify-between gap-2 pt-1 select-none">
@@ -81,14 +83,24 @@ export const PlayerControls = ({
 
         {/* Play / Pause Primary Button */}
         <button
-          onClick={onTogglePlay}
-          className="relative p-3.5 sm:p-4 rounded-full text-slate-950 font-bold transition-all duration-300 transform active:scale-90 hover:scale-105"
+          onClick={() => {
+            onTogglePlay();
+            setRippleId((id) => id + 1);
+          }}
+          className="relative p-3.5 sm:p-4 rounded-full text-slate-950 font-bold transition-all duration-300 transform active:scale-90 hover:scale-105 overflow-hidden"
           style={{
             backgroundColor: accentColor,
             boxShadow: `0 0 20px ${accentColor}88, 0 4px 14px rgba(0,0,0,0.5)`,
           }}
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
+          <motion.span
+            key={rippleId}
+            initial={{ scale: 0, opacity: 0.5 }}
+            animate={{ scale: 2, opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="absolute inset-0 rounded-full bg-white pointer-events-none"
+          />
           {isBuffering ? (
             <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
           ) : isPlaying ? (
