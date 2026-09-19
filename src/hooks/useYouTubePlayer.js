@@ -187,17 +187,25 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
     try {
       const tracks = await fetchModePlaylist(mode, timeOfDay, forceRefresh);
       if (tracks && tracks.length > 0) {
+        // Start on a random track instead of always the top search result, so
+        // reloading the page or switching modes doesn't keep landing on the same song.
+        const startIndex = tracks.length > 1 ? Math.floor(Math.random() * tracks.length) : 0;
+        const startTrack = tracks[startIndex];
         setPlaylist(tracks);
-        setCurrentIndex(0);
+        setCurrentIndex(startIndex);
         setCurrentTime(0);
-        setDuration(tracks[0].durationSeconds || 240);
+        setDuration(startTrack.durationSeconds || 240);
 
+        // Browsers block unmuted autoplay before any real interaction, and a muted
+        // "Playing" UI is more confusing than an honest "Paused" one — so just cue the
+        // track until the user actually interacts (see App.jsx), then play for real
+        // with sound. Once they have interacted, keep auto-loading + playing on every
+        // subsequent mode/time-of-day change as before.
         if (isPlayerReadyRef.current) {
           if (hasStartedByUserRef.current) {
-            youtubeService.loadVideo(tracks[0].videoId);
-            setIsPlaying(true);
+            youtubeService.loadVideo(startTrack.videoId);
           } else {
-            youtubeService.cueVideo(tracks[0].videoId);
+            youtubeService.cueVideo(startTrack.videoId);
           }
         }
       } else {
@@ -225,17 +233,19 @@ export function useYouTubePlayer(currentMode = 'highway', timeMode = 'day') {
     loadModeSongs(currentMode, timeMode, false);
   }, [currentMode, timeMode, loadModeSongs]);
 
-  // When Player becomes ready after playlist was already fetched
+  // When Player becomes ready after playlist was already fetched (see the matching
+  // comment in loadModeSongs above for why this cues rather than plays by default).
   useEffect(() => {
     if (isPlayerReady && playlist.length > 0 && !hasInitializedPlayerRef.current) {
       hasInitializedPlayerRef.current = true;
+      const startTrack = playlist[currentIndex] || playlist[0];
       if (hasStartedByUser) {
-        youtubeService.loadVideo(playlist[0].videoId);
+        youtubeService.loadVideo(startTrack.videoId);
       } else {
-        youtubeService.cueVideo(playlist[0].videoId);
+        youtubeService.cueVideo(startTrack.videoId);
       }
     }
-  }, [isPlayerReady, playlist, hasStartedByUser]);
+  }, [isPlayerReady, playlist, currentIndex, hasStartedByUser]);
 
   // Playback Control Handlers
   const togglePlay = useCallback(() => {

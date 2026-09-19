@@ -395,8 +395,8 @@ export const Road = ({ mode, timeMode = 'night', animStateRef, isRainEnabled }) 
         const laneOffset = curRoadWidth * 0.28 * (car.lane > 0 ? 0.6 : -0.6);
         const x = curVpX + laneOffset;
 
-        const carW = 38 * p * dpr;
-        const carH = 20 * p * dpr;
+        const carW = 54 * p * dpr;
+        const carH = 29 * p * dpr;
 
         // Draw Car Body Silhouette
         ctx.fillStyle = isDay ? '#1e293b' : '#020617';

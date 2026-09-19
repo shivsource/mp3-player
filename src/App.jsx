@@ -34,12 +34,16 @@ export default function App() {
     roadCurve,
   } = useDrivingAnimation(currentModeKey);
 
-  // Marks the first user gesture, needed to satisfy the browser's autoplay policy for the music player
+  // The player only cues (doesn't play) until this fires, since browsers block audible
+  // autoplay before any real interaction — a muted "Playing" state is more confusing
+  // than an honest "Paused" one. The first click/tap/key anywhere on the page starts
+  // real, audible playback (a genuine gesture, so the browser always allows it).
   const handleUserInteraction = useCallback(() => {
     if (!hasInteracted) {
       setHasInteracted(true);
+      player.play();
     }
-  }, [hasInteracted]);
+  }, [hasInteracted, player]);
 
   // Mode Selection Handler
   const handleSelectMode = (modeId) => {

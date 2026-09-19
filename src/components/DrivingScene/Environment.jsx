@@ -140,11 +140,25 @@ export const Environment = ({ mode, cameraOffset, timeMode = 'night', isRainEnab
                 preserveAspectRatio="none"
                 className="absolute bottom-0 w-full h-[95%]"
               >
+                <defs>
+                  <linearGradient id="backRidgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={isDay ? '#94a3b8' : isSunset ? '#7c2d12' : '#334155'} />
+                    <stop offset="35%" stopColor={isDay ? '#64748b' : isSunset ? '#451a03' : '#0f172a'} />
+                    <stop offset="100%" stopColor={isDay ? '#475569' : isSunset ? '#1c1917' : '#020617'} />
+                  </linearGradient>
+                </defs>
                 <path
                   d="M0,170 L160,70 L340,190 L520,60 L700,160 L880,50 L1060,180 L1240,80 L1440,170 L1440,320 L0,320 Z"
-                  fill={isDay ? '#64748b' : isSunset ? '#451a03' : '#0f172a'}
+                  fill="url(#backRidgeGrad)"
                   opacity={0.7}
                 />
+                {/* Snow-capped peak highlights (day/sunset only, subtle) */}
+                {!isNight && (
+                  <path
+                    d="M140,86 L160,70 L180,88 L167,86 L160,80 L153,87 Z M500,76 L520,60 L540,78 L527,76 L520,70 L513,77 Z M860,66 L880,50 L900,68 L887,66 L880,60 L873,67 Z"
+                    fill={isDay ? 'rgba(255,255,255,0.55)' : 'rgba(254,215,170,0.4)'}
+                  />
+                )}
               </svg>
 
               {/* Front Mountain Ridge */}
@@ -153,9 +167,23 @@ export const Environment = ({ mode, cameraOffset, timeMode = 'night', isRainEnab
                 preserveAspectRatio="none"
                 className="absolute bottom-0 w-full h-[65%]"
               >
+                <defs>
+                  <linearGradient id="frontRidgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={isDay ? '#475569' : isSunset ? '#44403c' : '#0f172a'} />
+                    <stop offset="40%" stopColor={isDay ? '#334155' : isSunset ? '#292524' : '#020617'} />
+                    <stop offset="100%" stopColor={isDay ? '#1e293b' : isSunset ? '#1c1917' : '#000000'} />
+                  </linearGradient>
+                </defs>
                 <path
                   d="M0,230 L220,110 L460,240 L700,120 L940,220 L1180,120 L1440,230 L1440,320 L0,320 Z"
-                  fill={isDay ? '#334155' : isSunset ? '#292524' : '#020617'}
+                  fill="url(#frontRidgeGrad)"
+                />
+                {/* Sunlit ridge-line edge for a touch of dimensionality */}
+                <path
+                  d="M0,230 L220,110 L460,240 L700,120 L940,220 L1180,120 L1440,230"
+                  fill="none"
+                  stroke={isDay ? 'rgba(148,163,184,0.5)' : isSunset ? 'rgba(251,146,60,0.35)' : 'rgba(56,189,248,0.15)'}
+                  strokeWidth="2"
                 />
               </svg>
             </motion.div>
@@ -179,9 +207,19 @@ export const Environment = ({ mode, cameraOffset, timeMode = 'night', isRainEnab
                     left: `${b.left}%`,
                     width: `${b.width}%`,
                     height: `${b.height}%`,
-                    backgroundColor: isDay ? '#1e293b' : isSunset ? '#1c1917' : '#030712',
+                    backgroundImage: isDay
+                      ? 'linear-gradient(100deg, #334155 0%, #1e293b 45%, #0f172a 100%)'
+                      : isSunset
+                      ? 'linear-gradient(100deg, #292524 0%, #1c1917 45%, #0c0a09 100%)'
+                      : 'linear-gradient(100deg, #0f172a 0%, #030712 45%, #000000 100%)',
                     borderColor: isDay ? '#475569' : '#1e293b',
-                    boxShadow: !isDay && b.isTower ? `0 0 20px ${b.glassTint}33` : 'none',
+                    boxShadow: [
+                      !isDay && b.isTower ? `0 0 20px ${b.glassTint}33` : '',
+                      'inset 2px 0 0 rgba(255,255,255,0.07)',
+                      'inset -2px 0 0 rgba(0,0,0,0.35)',
+                    ]
+                      .filter(Boolean)
+                      .join(', '),
                   }}
                 >
                   {/* Spire / Antenna */}
@@ -241,10 +279,24 @@ export const Environment = ({ mode, cameraOffset, timeMode = 'night', isRainEnab
                 preserveAspectRatio="none"
                 className="absolute bottom-0 w-full h-[85%]"
               >
+                <defs>
+                  <linearGradient id="backHillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={isDay ? '#84cc16' : isSunset ? '#c2410c' : '#166534'} />
+                    <stop offset="45%" stopColor={isDay ? '#65a30d' : isSunset ? '#9a3412' : '#14532d'} />
+                    <stop offset="100%" stopColor={isDay ? '#4d7c0f' : isSunset ? '#7c2d12' : '#052e16'} />
+                  </linearGradient>
+                </defs>
                 <path
                   d="M0,170 Q360,80 720,180 T1440,150 L1440,320 L0,320 Z"
-                  fill={isDay ? '#65a30d' : isSunset ? '#9a3412' : '#14532d'}
+                  fill="url(#backHillGrad)"
                   opacity={0.65}
+                />
+                {/* Soft sunlit crest highlight tracing the ridgeline */}
+                <path
+                  d="M0,170 Q360,80 720,180 T1440,150"
+                  fill="none"
+                  stroke={isDay ? 'rgba(236,252,203,0.5)' : isSunset ? 'rgba(251,191,36,0.35)' : 'rgba(74,222,128,0.15)'}
+                  strokeWidth="3"
                 />
               </svg>
 
@@ -254,9 +306,22 @@ export const Environment = ({ mode, cameraOffset, timeMode = 'night', isRainEnab
                 preserveAspectRatio="none"
                 className="absolute bottom-0 w-full h-[60%]"
               >
+                <defs>
+                  <linearGradient id="frontHillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={isDay ? '#4d7c0f' : isSunset ? '#7c2d12' : '#14532d'} />
+                    <stop offset="40%" stopColor={isDay ? '#3f6212' : isSunset ? '#451a03' : '#052e16'} />
+                    <stop offset="100%" stopColor={isDay ? '#1a2e05' : isSunset ? '#1c0701' : '#01180d'} />
+                  </linearGradient>
+                </defs>
                 <path
                   d="M0,220 Q480,130 960,210 T1440,180 L1440,320 L0,320 Z"
-                  fill={isDay ? '#3f6212' : isSunset ? '#451a03' : '#052e16'}
+                  fill="url(#frontHillGrad)"
+                />
+                <path
+                  d="M0,220 Q480,130 960,210 T1440,180"
+                  fill="none"
+                  stroke={isDay ? 'rgba(163,230,53,0.4)' : isSunset ? 'rgba(251,146,60,0.3)' : 'rgba(74,222,128,0.12)'}
+                  strokeWidth="2.5"
                 />
               </svg>
 

@@ -60,7 +60,7 @@ export const ProgressBar = ({
         />
         {/* Filled Gradient Highlight */}
         <div
-          className="absolute left-0 top-0 bottom-0 rounded-full pointer-events-none transition-all duration-75"
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full pointer-events-none transition-all duration-75"
           style={{
             width: `${progressPercent}%`,
             backgroundColor: accentColor,

@@ -42,8 +42,19 @@ export function useDrivingAnimation(currentModeKey = 'highway') {
       const state = animStateRef.current;
       state.time += delta;
 
-      // 1. Smoothly interpolate vehicle speed (Speedometer transition)
-      state.currentSpeedKmh += (state.targetSpeedKmh - state.currentSpeedKmh) * Math.min(1, delta * 2.5);
+      // 1. Organic speed fluctuation: a real driver eases on/off the throttle rather
+      // than holding one exact speed — the target wanders within a band below the
+      // mode's configured max speed, using two slow sine waves so it never repeats
+      // in an obviously periodic way.
+      const speedWave =
+        Math.sin(state.time * 0.42) * 0.5 + // ~15s primary drift (clearly visible up/down)
+        Math.sin(state.time * 0.15 + 2.1) * 0.3 + // ~42s slower long-cycle drift
+        Math.sin(state.time * 0.9 + 0.7) * 0.2; // quick micro throttle variation
+      const speedVariance = 0.14; // wanders up to ~14% below the mode's max speed
+      state.targetSpeedKmh = modeConfig.speedKmh * (1 - speedVariance * (1 - speedWave) * 0.5);
+
+      // Smoothly interpolate vehicle speed toward that wandering target (Speedometer transition)
+      state.currentSpeedKmh += (state.targetSpeedKmh - state.currentSpeedKmh) * Math.min(1, delta * 1.1);
 
       // 2. Accumulate road travel distance based on current speed
       const speedNorm = state.currentSpeedKmh / 100;

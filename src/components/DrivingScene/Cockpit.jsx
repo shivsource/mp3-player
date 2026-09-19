@@ -61,7 +61,7 @@ export const Cockpit = ({
       />
 
       {/* 4. Bottom Dashboard & Steering Wheel Area */}
-      <div className="relative w-full flex flex-col items-center">
+      <div className="relative w-full flex flex-col items-center translate-y-2 sm:translate-y-3 md:translate-y-4">
         {/* Dynamic Ambient Dash LED Strip */}
         <div
           className="w-full h-1 sm:h-1.5 transition-colors duration-700 ease-out"
@@ -81,7 +81,7 @@ export const Cockpit = ({
         >
           {/* Realistic Steering Wheel positioned bottom-center, with the Speedometer
               pinned to its left on large screens (stacked above it on smaller ones) */}
-          <div className="relative w-full flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-0 -mb-8 sm:-mb-12 md:-mb-16 z-20">
+          <div className="relative w-full flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-0 -mb-4 sm:-mb-6 md:-mb-8 z-20">
             {/* Instrument Cluster Gauge (Speedometer) */}
             <div className="relative z-10 lg:absolute lg:left-4 xl:left-12 lg:top-1/2 lg:-translate-y-1/2">
               <Speedometer speedKmh={displaySpeed} mode={mode} isPlaying={isPlaying} />
